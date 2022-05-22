@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Posts</title>
 </head>
+
 <body>
     <h1>Recent Posts</h1>
 
-    <% for (let i = 0; i < 5; i++) { %>
-        <p>Post Number <%= i + 1 %></p>
+    <a href="/posts/new">Add New Post</a>
+    <hr>
+
+    <% for (let post of posts) { %>
+        <p> - <%= post.author %></p>
+        <h3><%= post.title %></h3>
+        <p>"<%= post.text %>"</p>
+        <a href="/posts/<%= post._id %>">Open</a>
+        <hr>
     <% } %>
 </body>
+
 </html>
