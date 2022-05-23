@@ -7,10 +7,19 @@
     <title>Post</title>
 </head>
 <body>
-    <h3>Post of <%= post.author %></h3>
-    <h2><%= post.title %></h2>
-    <h4><%= post.text %></h4>
+    <p>- <%= post.author %></p>
+    <h3><%= post.title %></h3>
+    <p>"<%= post.text %>"</p>
+
     <hr>
+    <a href="/posts/<%= post._id %>/edit">Edit</a><br><br>
+
+    <form action="/posts/<%= post._id %>?_method=DELETE" method="POST">
+        <button>Delete</button>
+    </form>
+    
+    <hr>
+
     <a href="/posts">Back</a>
 </body>
 </html>

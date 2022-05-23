@@ -1,7 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const methodOverride = require('method-override');
 const path = require('path');
 const Post = require('./models/postschema');
+const { send } = require('process');
 
 mongoose.connect('mongodb://localhost:27017/user-post');
 
@@ -13,9 +15,11 @@ db.once('open', () => {
 
 const app = express();
 
+// Sets and Uses
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+app.use(methodOverride('_method'));
 app.use(express.urlencoded({ extended: true }));
 
 
@@ -41,9 +45,30 @@ app.get('/posts/:id', async (req, res) => {
     res.render('posts/show', { post });
 });
 
-app.post('/posts', (req, res) => {
-    console.log(req.body);
-    res.send('New Posts are not available right now. Sorry...');
+// Show edit page
+app.get('/posts/:id/edit', async (req, res) => {
+    const { id } = req.params;
+    const post = await Post.findById(id);
+    res.render('posts/edit', { post });
+});
+
+app.post('/posts', async (req, res) => {
+    const post = new Post(req.body);
+    await post.save();
+    res.redirect('/posts');
+});
+
+// Find and Update post
+app.put('/posts/:id', async (req, res) => {
+    const { id } = req.params;
+    await Post.findByIdAndUpdate(id, { ...req.body });
+    res.redirect(`/posts/${id}`);
+});
+
+app.delete('/posts/:id', async (req, res) => {
+    const { id } = req.params;
+    await Post.findByIdAndDelete(id);
+    res.redirect('/posts');
 });
 
 app.listen(3000, () => {
