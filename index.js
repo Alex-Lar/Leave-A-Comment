@@ -1,9 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
+const engine = require('ejs-mate');
 const path = require('path');
 const Post = require('./models/postschema');
-const { send } = require('process');
+
 
 mongoose.connect('mongodb://localhost:27017/user-post');
 
@@ -14,6 +15,9 @@ db.once('open', () => {
 });
 
 const app = express();
+
+
+app.engine('ejs', engine);
 
 // Sets and Uses
 app.set('view engine', 'ejs');
