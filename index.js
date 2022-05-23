@@ -75,6 +75,10 @@ app.delete('/posts/:id', async (req, res) => {
     res.redirect('/posts');
 });
 
+app.get('*', (req, res) => {
+    res.render('error');
+});
+
 app.listen(3000, () => {
     console.log("Port 3000 is on...");
 });
