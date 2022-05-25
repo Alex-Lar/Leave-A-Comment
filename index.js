@@ -5,7 +5,6 @@ const engine = require('ejs-mate');
 const path = require('path');
 const Post = require('./models/postschema');
 
-
 mongoose.connect('mongodb://localhost:27017/user-post');
 
 const db = mongoose.connection;
@@ -16,18 +15,18 @@ db.once('open', () => {
 
 const app = express();
 
-
+// Sets & Uses
 app.engine('ejs', engine);
-
-// Sets and Uses
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
 
 app.use(methodOverride('_method'));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 
-
+// Routes
 app.get('/', (req, res) => {
     res.render('home');
 });
@@ -69,12 +68,14 @@ app.put('/posts/:id', async (req, res) => {
     res.redirect(`/posts/${id}`);
 });
 
+// Delete post
 app.delete('/posts/:id', async (req, res) => {
     const { id } = req.params;
     await Post.findByIdAndDelete(id);
     res.redirect('/posts');
 });
 
+// If page is not found
 app.get('*', (req, res) => {
     res.render('error');
 });
