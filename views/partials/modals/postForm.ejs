@@ -8,7 +8,7 @@
             <div class="modal-body">
                 <p class="lead">Fill out this form and your post will appear in the feed!</p>
 
-                <form>
+                <form action="/posts" method="POST">
                     <div class="mb-3">
                         <label for="author" class="col-form-label">Your name:</label>
                         <input type="text" id="author" name="author" class="form-control">
@@ -18,14 +18,14 @@
                         <input type="text" id="title" name="title" class="form-control">
                     </div>
                     <div class="mb-3">
-                        <label for="text" class="col-form-label">Text</label>
+                        <label for="text" class="col-form-label">Text:</label>
                         <textarea class="form-control" name="text" id="text" cols="30" rows="10"></textarea>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Submit</button>
             </div>
         </div>
     </div>

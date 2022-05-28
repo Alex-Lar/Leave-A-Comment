@@ -26,10 +26,12 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 
+
 // Routes
 app.get('/', (req, res) => {
     res.render('home');
 });
+
 
 // Show All Posts
 app.get('/posts', async (req, res) => {
@@ -37,16 +39,16 @@ app.get('/posts', async (req, res) => {
     res.render('posts/posts', { posts });
 });
 
-app.get('/posts/new', (req, res) => {
-    res.render('posts/new');
-});
 
 // Show chosen post
 app.get('/posts/:id', async (req, res) => {
     const { id } = req.params;
     const post = await Post.findById(id);
+    console.log(post);
+    console.log(post.author);
     res.render('posts/show', { post });
 });
+
 
 // Show edit page
 app.get('/posts/:id/edit', async (req, res) => {
@@ -55,11 +57,14 @@ app.get('/posts/:id/edit', async (req, res) => {
     res.render('posts/edit', { post });
 });
 
+
+// Create new post
 app.post('/posts', async (req, res) => {
     const post = new Post(req.body);
     await post.save();
     res.redirect('/posts');
 });
+
 
 // Find and Update post
 app.put('/posts/:id', async (req, res) => {
@@ -68,12 +73,16 @@ app.put('/posts/:id', async (req, res) => {
     res.redirect(`/posts/${id}`);
 });
 
+
 // Delete post
 app.delete('/posts/:id', async (req, res) => {
     const { id } = req.params;
     await Post.findByIdAndDelete(id);
     res.redirect('/posts');
 });
+
+
+
 
 // If page is not found
 app.get('*', (req, res) => {

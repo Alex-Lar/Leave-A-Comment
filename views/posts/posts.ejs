@@ -1,14 +1,41 @@
 <% layout('layouts/boilerplate') -%>
 
-<h1>Recent Posts</h1>
+<section class="p-5">
+    <div class="container">
+        <h1 class="text-center">Recent <span style="color: #E08600;">Posts</span></h1>
+        <div class="row g-5 pt-5">
 
-<a href="/posts/new">Add New Post</a>
-<hr>
+            <% for (let post of posts) { %>
 
-<% for (let post of posts) { %>
-    <p> - <%= post.author %></p>
-    <h3><%= post.title %></h3>
-    <p>"<%= post.text %>"</p>
-    <a href="/posts/<%= post._id %>">Open</a>
-    <hr>
-<% } %>
+            <div class="col-md-6">
+                <div class="card border-dark">
+                    <div class="card-header text-light" style="background-color: #3a3a3a;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="d-inline">&mdash; <%= post.author %></span>
+
+                            <div class="d-flex align-items-center">
+
+                                <a href="/posts/<%= post._id %>/edit" class="link-light text-decoration-none">Edit</a>
+
+
+                                <!--* DELETE -->
+                                <form action="/posts/<%= post._id %>?_method=DELETE" method="POST" class="ms-1 p-0">
+                                    <button type="submit"
+                                        class="btn btn-link link-light text-decoration-none">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title"><%= post.title %></h4>
+                        <p class="card-text my-3"><%= post.text %></p>
+                        <a href="/posts/<%= post._id %>" class="text-decoration-none" style="color: #2f2f2f84;">25 comments</a>
+                    </div>
+                </div>
+            </div>
+
+            <% } %>
+
+        </div>
+    </div>
+</section>

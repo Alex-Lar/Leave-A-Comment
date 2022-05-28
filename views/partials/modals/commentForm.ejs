@@ -1,0 +1,29 @@
+<div class="modal fade" id="comment" tabindex="-1" aria-labelledby="commentLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="commentLabel">Comment Form</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="lead">Fill out this form so you can post your comment</p>
+
+                <form>
+                    <div class="mb-3">
+                        <label for="author" class="col-form-label">Your name:</label>
+                        <input type="text" id="author" name="author" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="text" class="col-form-label">Text</label>
+                        <textarea class="form-control" name="text" id="text" cols="30" rows="10"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>

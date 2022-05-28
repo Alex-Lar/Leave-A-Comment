@@ -1,19 +1,24 @@
 <% layout('layouts/boilerplate') -%>
 
-<h1>Edit Page!</h1>
+<section class="p-5">
+    <div class="container">
+        <h1 class="text-center"><span style="color: #E08600;">Edit</span> Form</h1>
+        <div class="row">
+            <div class="col-6 offset-3">
 
-<form action="/posts/<%= post._id %>?_method=PUT" method="POST">
-    <label for="author">Username: </label><br>
-    <input type="text" name="author" id="author" value="<%= post.author %>"><br><br>
-
-    <label for="title">Title: </label><br>
-    <input type="text" name="title" id="title" value="<%= post.title %>"><br><br>
-
-    <label for="text">Text: </label><br>
-    <textarea name="text" id="text" cols="30" rows="5"><%=post.text%></textarea><br>
-    <button>Submit</button>
-</form>
-
-<br>
-<hr>
-<a href="/posts/<%= post._id %>">Back</a>
+                <form action="/posts/<%= post._id %>?_method=PUT" method="POST">
+                    <label class="form-label" for="author">Username: </label><br>
+                    <input class="form-control" type="text" name="author" id="author" value="<%= post.author %>"><br><br>
+                
+                    <label class="form-label" for="title">Title: </label><br>
+                    <input class="form-control" type="text" name="title" id="title" value="<%= post.title %>"><br><br>
+                
+                    <label class="form-label" for="text">Text: </label><br>
+                    <textarea class="form-control" name="text" id="text" cols="30" rows="5"><%=post.text%></textarea><br>
+                    <button type="submit" class="btn text-light px-4" style="background-color: #E08600;">Update Post</button>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</section>
