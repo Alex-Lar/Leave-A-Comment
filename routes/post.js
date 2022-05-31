@@ -1,7 +1,6 @@
 const { Router } = require('express');
 const Post = require('../models/postSchema');
 const Comm = require('../models/commentSchema');
-const filterComments = require('../utils/commentFilter');
 const router = Router();
 
 
@@ -22,8 +21,6 @@ router.get('/posts', async (req, res) => {
     }
 });
 
-
-
 router.get('/posts/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -32,10 +29,17 @@ router.get('/posts/:id', async (req, res) => {
 
         if (post.hasComments) {
             const allComms = await Comm.find({});
-            comments = filterComments(post, allComms);
-        }
 
+            comments = allComms.filter((cur) => {
+                const userId = cur.user.toString();
+                if (userId === post.id) {
+                    return cur;
+                }
+            });
+        }
+        console.log("Out of function: ", comments);
         res.render('posts/show', { post, comments });   
+
     } catch (error) {
         console.log(error);
     }
@@ -65,6 +69,7 @@ router.put('/posts/:id', async (req, res) => {
     try {
         const { id } = req.params;
         await Post.findByIdAndUpdate(id, { ...req.body });
+
         res.redirect(`/posts/${id}`);   
     } catch (error) {
         console.log(error);
@@ -74,12 +79,12 @@ router.put('/posts/:id', async (req, res) => {
 router.post('/posts/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const user = await Post.findById(id);
+        const post = await Post.findById(id);
         const comment = new Comm(req.body);
-        comment.user = user;
-        user.hasComments = true;
+        comment.user = post;
+        post.hasComments = true;
 
-        await user.save();
+        await post.save();
         await comment.save();
 
         res.redirect(`/posts/${id}`);   
