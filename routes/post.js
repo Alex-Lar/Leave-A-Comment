@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const Post = require('../models/postSchema');
 const Comm = require('../models/commentSchema');
+const filterComments = require('../utils/commentFilter');
 const router = Router();
 
 
@@ -21,22 +22,19 @@ router.get('/posts', async (req, res) => {
     }
 });
 
+
+
 router.get('/posts/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const post = await Post.findById(id);
+        const post = await Post.findById(id);   
         let comments = null;
 
         if (post.hasComments) {
-            const comm = await Comm.find({});
-            comments = comm.filter((cur) => {
-                const userId = cur.user.toString();
-
-                if (userId === id) {
-                    return cur;
-                }
-            });
+            const allComms = await Comm.find({});
+            comments = filterComments(post, allComms);
         }
+
         res.render('posts/show', { post, comments });   
     } catch (error) {
         console.log(error);
