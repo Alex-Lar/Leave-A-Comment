@@ -1,12 +1,15 @@
-<div class="card-body py-1" id="ElizabethBrown">
-    <p class="my-1">&mdash; <%= post.author %></p>
-  
-    <p class="card-text my-2 ms-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi iure voluptas nihil dicta nisi est iste odio quaerat dignissimos sapiente corrupti libero hic numquam reiciendis dolores nobis accusantium repudiandae, perspiciatis tenetur iusto expedita, nam neque. Recusandae similique iure deserunt voluptas excepturi temporibus culpa sequi vero, aperiam libero obcaecati maiores a quis animi itaque corrupti quidem asperiores inventore, non assumenda veniam accusamus quas deleniti eligendi. Cum corporis eveniet corrupti magnam. Voluptatibus.</p>
+<% if (comments !== null) { %>
+<% for (let comment of comments) { %>
+
+<div class="card-body py-1" id="user-comment">
+    <p class="my-1 text-muted">&mdash;<%= comment.author %></p>
+
+    <p class="card-text my-2 ms-3"><%= comment.comment %></p>
 
     <div class="d-flex align-items-center ms-3">
         <!--? REPLY -->
-        <button class="btn btn-link text-secondary text-decoration-none ps-0"
-            data-bs-toggle="modal" data-bs-target="#comment">
+        <button class="btn btn-link text-secondary text-decoration-none ps-0" data-bs-toggle="modal"
+            data-bs-target="#comment">
             <i class="bi bi-chat-square me-lg-1"></i>
             Reply
         </button>
@@ -16,9 +19,11 @@
 
         <!--? DELETE -->
         <form class="p-0">
-            <button type="submit"
-                class="btn btn-link link-secondary text-decoration-none">Delete</button>
+            <button type="submit" class="btn btn-link link-secondary text-decoration-none">Delete</button>
         </form>
     </div>
-
 </div>
+<% } %>
+<% } else { %>
+<p class="lead my-4 text-center text-muted">No comments yet...</p>
+<% } %>

@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const Post = require('../models/postschema');
+const Post = require('../models/postSchema');
 const Comm = require('../models/commentSchema');
 const router = Router();
 
@@ -25,7 +25,19 @@ router.get('/posts/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const post = await Post.findById(id);
-        res.render('posts/show', { post });   
+        let comments = null;
+
+        if (post.hasComments) {
+            const comm = await Comm.find({});
+            comments = comm.filter((cur) => {
+                const userId = cur.user.toString();
+
+                if (userId === id) {
+                    return cur;
+                }
+            });
+        }
+        res.render('posts/show', { post, comments });   
     } catch (error) {
         console.log(error);
     }
@@ -67,9 +79,11 @@ router.post('/posts/:id', async (req, res) => {
         const user = await Post.findById(id);
         const comment = new Comm(req.body);
         comment.user = user;
+        user.hasComments = true;
 
-        console.log(comment);
+        await user.save();
         await comment.save();
+
         res.redirect(`/posts/${id}`);   
     } catch (error) {
         console.log(error);
