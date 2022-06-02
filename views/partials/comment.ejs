@@ -1,29 +1,23 @@
-<% if (comments !== null) { %>
+<% if (comments.length) { %>
 <% for (let comment of comments) { %>
 
-<div class="card-body py-1" id="user-comment">
-    <p class="my-1 text-muted">&mdash;<%= comment.author %></p>
+<div class="card-body py-1">
+    <p class="my-1 text-muted">&mdash;&nbsp;<%= comment.author %></p>
 
-    <p class="card-text my-2 ms-3"><%= comment.comment %></p>
+    <p class="card-text my-2 ms-3">&nbsp;<%= comment.comment %></p>
 
-    <div class="d-flex align-items-center ms-3">
-        <!--? REPLY -->
-        <button class="btn btn-link text-secondary text-decoration-none ps-0" data-bs-toggle="modal"
-            data-bs-target="#comment">
-            <i class="bi bi-chat-square me-lg-1"></i>
-            Reply
-        </button>
+    <div class="d-flex align-items-center ms-3">&nbsp;
+        <a href="/comment/<%= comment._id %>/edit" class="link-secondary text-decoration-none">Edit</a>
 
-        <!--? EDIT -->
-        <a href="#" class="link-secondary text-decoration-none">Edit</a>
-
-        <!--? DELETE -->
-        <form class="p-0">
+        <form action="/comment/<%= comment._id %>?_method=DELETE" method="post" class="p-0">
             <button type="submit" class="btn btn-link link-secondary text-decoration-none">Delete</button>
         </form>
     </div>
 </div>
+
+
 <% } %>
 <% } else { %>
 <p class="lead my-4 text-center text-muted">No comments yet...</p>
 <% } %>
+ 

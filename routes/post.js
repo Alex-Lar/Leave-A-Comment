@@ -3,6 +3,15 @@ const Post = require('../models/postSchema');
 const Comm = require('../models/commentSchema');
 const router = Router();
 
+// Filter Comments
+function filter(allComms, post) {
+    return allComms.filter((cur) => {
+        const userId = cur.user.toString();
+        if (userId === post.id) {
+            return cur;
+        }
+    });
+}
 
 router.get('/', (req, res) => {
     try {
@@ -25,21 +34,14 @@ router.get('/posts/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const post = await Post.findById(id);   
-        let comments = null;
+        let comments = [];
 
         if (post.hasComments) {
             const allComms = await Comm.find({});
-
-            comments = allComms.filter((cur) => {
-                const userId = cur.user.toString();
-                if (userId === post.id) {
-                    return cur;
-                }
-            });
+            comments = filter(allComms, post);
         }
-        console.log("Out of function: ", comments);
-        res.render('posts/show', { post, comments });   
 
+        res.render('posts/show', { post, comments });   
     } catch (error) {
         console.log(error);
     }
@@ -49,7 +51,10 @@ router.get('/posts/:id/edit', async (req, res) => {
     try {
         const { id } = req.params;
         const post = await Post.findById(id);
-        res.render('posts/edit', { post });   
+        res.render('posts/edit', {
+            post,
+            isPost: true
+        });   
     } catch (error) {
         console.log(error);
     }
@@ -96,8 +101,65 @@ router.post('/posts/:id', async (req, res) => {
 router.delete('/posts/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        await Post.findByIdAndDelete(id);
+        const post = await Post.findById(id);
+
+        if (post.hasComments) {
+            let allComms = await Comm.find({});
+            let comments = filter(allComms, post); 
+
+            for (let comment of comments) {
+                await Comm.findByIdAndDelete(comment._id); 
+            }
+        } 
+
+        await Post.findByIdAndDelete(id);      
+
         res.redirect('/posts');   
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+router.get('/comment/:id/edit', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const comment = await Comm.findById(id);
+        res.render('posts/edit', {
+            comment,
+            isPost: false
+        });  
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+router.put('/comment/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await Comm.findByIdAndUpdate(id, { ...req.body });
+        const { user } = await Comm.findById(id);
+
+        res.redirect(`/posts/${user.toString()}`);
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+router.delete('/comment/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { user } = await Comm.findById(id);
+        const post = await Post.findById(user.toString());
+        await Comm.findByIdAndDelete(id);
+        
+        let allComms = await Comm.find({});
+        let comments = filter(allComms, post);
+
+        if (!comments.length) {
+            post.hasComments = false;
+        }
+
+        res.redirect(`/posts/${post._id}`);
     } catch (error) {
         console.log(error);
     }

@@ -1,13 +1,14 @@
-<div class="modal fade" id="comment" tabindex="-1" aria-labelledby="commentLabel" aria-hidden="true">
+<div class="modal fade" id="postReply" tabindex="-1" aria-labelledby="postReplyLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="commentLabel">Comment Form</h5>
+                <h5 class="modal-title" id="postReplyLabel">Reply to post</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <p class="lead">Fill out this form so you can post your comment</p>
-                <!--? Comment Form -->
+
+                <!--? Reply To Post -->
                 <form action="/posts/<%= post._id %>" method="post">
                     <div class="mb-3">
                         <label for="author" class="col-form-label">Your name:</label>
@@ -18,7 +19,7 @@
                         <label for="comment" class="col-form-label">Comment:</label>
                         <textarea class="form-control" name="comment" id="comment" cols="30" rows="10"></textarea>
                     </div>
-                    
+
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
