@@ -6,7 +6,7 @@
 
             <div class="col">
                 <div class="card border-dark">
-                    <div class="card-header text-light" style="background-color: #3a3a3a;">
+                    <div class="card-header text-light bg-dark">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="d-inline">&mdash; <%= post.author %></span>
                             <div class="d-flex align-items-center">
@@ -25,14 +25,11 @@
                     <div class="card-body">
                         <h4 class="card-title"><%= post.title %></h4>
                         <p class="card-text my-3"><%= post.text %></p>
-
-                        <!--? Reply -->
                         <button class="btn btn-link text-secondary text-decoration-none ps-0" data-bs-toggle="modal"
-                            data-bs-target="#postReply">
+                            data-bs-target="#comment">
                             <i class="bi bi-chat-square me-lg-1"></i>
                             Reply
                         </button>
-
                     </div>
 
                     <hr class="m-1">
@@ -46,7 +43,6 @@
         </div>
     </div>
 </section>
-
 
 <!--? Comment form -->
 <%- include('../partials/modals/postReply'); %> 
