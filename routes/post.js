@@ -1,173 +1,125 @@
 const { Router } = require('express');
 const Post = require('../models/postSchema');
 const Comm = require('../models/commentSchema');
+const catchAsync = require('../utils/catchAsync');
+const filter = require('../utils/filter');
 const router = Router();
 
-// Filter Comments
-function filter(allComms, post) {
-    return allComms.filter((cur) => {
-        const userId = cur.user.toString();
-        if (userId === post.id) {
-            return cur;
-        }
+
+
+router.get('/', (req, res, next) => {
+    res.render('home');
+});
+
+router.get('/posts', catchAsync(async (req, res, next) => {
+    const posts = await Post.find({});
+    res.render('posts/posts', {
+        posts
     });
-}
+}));
 
-router.get('/', (req, res) => {
-    try {
-        res.render('home');   
-    } catch (error) {
-        console.log(error);
+router.get('/posts/:id', catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const post = await Post.findById(id);
+    let comments = [];
+
+    if (post.hasComments) {
+        const allComms = await Comm.find({});
+        comments = filter(allComms, post);
     }
-});
 
-router.get('/posts', async (req, res) => {
-    try {
-        const posts = await Post.find({});
-        res.render('posts/posts', { posts });   
-    } catch (error) {
-        console.log(error);
-    }
-});
+    res.render('posts/show', {
+        post,
+        comments
+    });
+}));
 
-router.get('/posts/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const post = await Post.findById(id);   
-        let comments = [];
+router.get('/posts/:id/edit', catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const post = await Post.findById(id);
 
-        if (post.hasComments) {
-            const allComms = await Comm.find({});
-            comments = filter(allComms, post);
-        }
+    res.render('posts/edit', {
+        post,
+        isPost: true
+    });
+}));
 
-        res.render('posts/show', { post, comments });   
-    } catch (error) {
-        console.log(error);
-    }
-});
+router.post('/posts', catchAsync(async (req, res, next) => {
+    const post = new Post(req.body);
+    await post.save();
+    res.redirect('/posts');
+}));
 
-router.get('/posts/:id/edit', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const post = await Post.findById(id);
-        res.render('posts/edit', {
-            post,
-            isPost: true
-        });   
-    } catch (error) {
-        console.log(error);
-    }
-});
+router.put('/posts/:id', catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    await Post.findByIdAndUpdate(id, { ...req.body });
 
-router.post('/posts', async (req, res) => {
-    try {
-        const post = new Post(req.body);
-        await post.save();
-        res.redirect('/posts');   
-    } catch (error) {
-        console.log(error);
-    }
-});
+    res.redirect(`/posts/${id}`);
+}));
 
-router.put('/posts/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        await Post.findByIdAndUpdate(id, { ...req.body });
+router.post('/posts/:id', catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const post = await Post.findById(id);
+    const comment = new Comm(req.body);
+    comment.user = post;
+    post.hasComments = true;
 
-        res.redirect(`/posts/${id}`);   
-    } catch (error) {
-        console.log(error);
-    }
-});
+    await post.save();
+    await comment.save();
 
-router.post('/posts/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const post = await Post.findById(id);
-        const comment = new Comm(req.body);
-        comment.user = post;
-        post.hasComments = true;
+    res.redirect(`/posts/${id}`);
+}));
 
-        await post.save();
-        await comment.save();
+router.delete('/posts/:id', catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const post = await Post.findById(id);
 
-        res.redirect(`/posts/${id}`);   
-    } catch (error) {
-        console.log(error);
-    }
-});
-
-router.delete('/posts/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const post = await Post.findById(id);
-
-        if (post.hasComments) {
-            let allComms = await Comm.find({});
-            let comments = filter(allComms, post); 
-
-            for (let comment of comments) {
-                await Comm.findByIdAndDelete(comment._id); 
-            }
-        } 
-
-        await Post.findByIdAndDelete(id);      
-
-        res.redirect('/posts');   
-    } catch (error) {
-        console.log(error);
-    }
-});
-
-router.get('/comment/:id/edit', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const comment = await Comm.findById(id);
-        res.render('posts/edit', {
-            comment,
-            isPost: false
-        });  
-    } catch (error) {
-        console.log(error);
-    }
-});
-
-router.put('/comment/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        await Comm.findByIdAndUpdate(id, { ...req.body });
-        const { user } = await Comm.findById(id);
-
-        res.redirect(`/posts/${user.toString()}`);
-    } catch (error) {
-        console.log(error);
-    }
-});
-
-router.delete('/comment/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { user } = await Comm.findById(id);
-        const post = await Post.findById(user.toString());
-        await Comm.findByIdAndDelete(id);
-        
+    if (post.hasComments) {
         let allComms = await Comm.find({});
         let comments = filter(allComms, post);
 
-        if (!comments.length) {
-            post.hasComments = false;
+        for (let comment of comments) {
+            await Comm.findByIdAndDelete(comment._id);
         }
-
-        res.redirect(`/posts/${post._id}`);
-    } catch (error) {
-        console.log(error);
     }
-});
 
-router.get('*', (req, res) => {
-    res.render('error');
-});
+    await Post.findByIdAndDelete(id);
+
+    res.redirect('/posts');
+}));
+
+router.get('/comment/:id/edit', catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const comment = await Comm.findById(id);
+    res.render('posts/edit', {
+        comment,
+        isPost: false
+    });
+}));
+
+router.put('/comment/:id', catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    await Comm.findByIdAndUpdate(id, { ...req.body });
+    const { user } = await Comm.findById(id);
+
+    res.redirect(`/posts/${user.toString()}`);
+}));
+
+router.delete('/comment/:id', catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const { user } = await Comm.findById(id);
+    const post = await Post.findById(user.toString());
+    await Comm.findByIdAndDelete(id);
+
+    let allComms = await Comm.find({});
+    let comments = filter(allComms, post);
+
+    if (!comments.length) {
+        post.hasComments = false;
+    }
+
+    res.redirect(`/posts/${post._id}`);
+}));
 
 
 module.exports = router;

@@ -5,34 +5,79 @@
         <h1 class="text-center"><span style="color: #E08600;">Edit</span> Form</h1>
         <div class="row">
             <div class="col-6 offset-3">
-                
-                <% if (isPost) { %> 
-                <form action="/posts/<%= post._id %>?_method=PUT" method="POST">
-                    <label class="form-label" for="author">Username: </label><br>
-                    <input class="form-control" type="text" name="author" id="author" value="<%= post.author %>"><br><br>
-                
-                    <label class="form-label" for="title">Title: </label><br>
-                    <input class="form-control" type="text" name="title" id="title" value="<%= post.title %>"><br><br>
-                
-                    <label class="form-label" for="text">Text: </label><br>
-                    <textarea class="form-control" name="text" id="text" cols="30" rows="5"><%=post.text%></textarea><br>
-                    <button type="submit" class="btn text-light px-4" style="background-color: #E08600;">Update Post</button>
-                </form>
-                <% } else { %> 
-                    <form action="/comment/<%= comment._id %>?_method=PUT" method="post">
-                        <div class="mb-3">
-                            <label for="author" class="col-form-label">Your name:</label>
-                            <input type="text" id="author" name="author" class="form-control" value="<%=comment.author%>">
-                        </div>
-    
-                        <div class="mb-3">
-                            <label for="comment" class="col-form-label">Comment:</label>
-                            <textarea class="form-control" name="comment" id="comment" cols="30" rows="10"><%=comment.comment%></textarea>
-                        </div>
 
-                        <button type="submit" class="btn text-light px-4" style="background-color: #E08600;">Update Comment</button>
-                    </form>
-                <% } %> 
+                <% if (isPost) { %>
+                <form class="needs-validation" action="/posts/<%= post._id %>?_method=PUT" method="POST" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label" for="author">Username: </label><br>
+                        <input class="form-control" type="text" name="author" id="author" value="<%= post.author %>"
+                            required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            The field must not be empty!
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="title">Title: </label><br>
+                        <input class="form-control" type="text" name="title" id="title" value="<%= post.title %>"
+                            required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            The field must not be empty!
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="text">Text: </label><br>
+                        <textarea class="form-control" name="text" id="text" cols="30" rows="5"
+                            required><%=post.text%></textarea>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            The field must not be empty!
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn text-light px-4" style="background-color: #E08600;">Update
+                        Post</button>
+                </form>
+                <% } else { %>
+                <form class="needs-validation" action="/comment/<%= comment._id %>?_method=PUT" method="POST"
+                    novalidate>
+                    <div class="mb-3">
+                        <label for="author" class="col-form-label">Your name:</label>
+                        <input type="text" id="author" name="author" class="form-control" value="<%=comment.author%>"
+                            required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            The field must not be empty!
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="comment" class="col-form-label">Comment:</label>
+                        <textarea class="form-control" name="comment" id="comment" cols="30" rows="10"
+                            required><%=comment.comment%></textarea>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            The field must not be empty!
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn text-light px-4" style="background-color: #E08600;">Update
+                        Comment</button>
+                </form>
+                <% } %>
             </div>
         </div>
     </div>

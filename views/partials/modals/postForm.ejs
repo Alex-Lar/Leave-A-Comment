@@ -8,18 +8,36 @@
             <div class="modal-body">
                 <p class="lead">Fill out this form and your post will appear in the feed!</p>
 
-                <form action="/posts" method="POST">
+                <form class="needs-validation" action="/posts" method="POST" novalidate>
                     <div class="mb-3">
                         <label for="author" class="col-form-label">Your name:</label>
-                        <input type="text" id="author" name="author" class="form-control">
+                        <input type="text" id="author" name="author" class="form-control" required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a name in the input.
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="title" class="col-form-label">Title:</label>
-                        <input type="text" id="title" name="title" class="form-control">
+                        <input type="text" id="title" name="title" class="form-control" required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a title in the input.
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="text" class="col-form-label">Text:</label>
-                        <textarea class="form-control" name="text" id="text" cols="30" rows="10"></textarea>
+                        <textarea class="form-control" name="text" id="text" cols="30" rows="10" required></textarea>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a message in the textarea.
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
