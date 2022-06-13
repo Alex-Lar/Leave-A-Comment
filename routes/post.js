@@ -7,18 +7,14 @@ const router = Router();
 
 
 
-router.get('/', (req, res, next) => {
-    res.render('home');
-});
-
-router.get('/posts', catchAsync(async (req, res, next) => {
+router.get('/', catchAsync(async (req, res, next) => {
     const posts = await Post.find({});
     res.render('posts/posts', {
         posts
     });
 }));
 
-router.get('/posts/:id', catchAsync(async (req, res, next) => {
+router.get('/:id', catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const post = await Post.findById(id);
     let comments = [];
@@ -34,7 +30,7 @@ router.get('/posts/:id', catchAsync(async (req, res, next) => {
     });
 }));
 
-router.get('/posts/:id/edit', catchAsync(async (req, res, next) => {
+router.get('/:id/edit', catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const post = await Post.findById(id);
 
@@ -44,20 +40,21 @@ router.get('/posts/:id/edit', catchAsync(async (req, res, next) => {
     });
 }));
 
-router.post('/posts', catchAsync(async (req, res, next) => {
+router.post('/', catchAsync(async (req, res, next) => {
     const post = new Post(req.body);
     await post.save();
+    req.flash('success', 'New post successfully created!');
     res.redirect('/posts');
 }));
 
-router.put('/posts/:id', catchAsync(async (req, res, next) => {
+router.put('/:id', catchAsync(async (req, res, next) => {
     const { id } = req.params;
     await Post.findByIdAndUpdate(id, { ...req.body });
-
+    req.flash('success', 'The post was successfully edited!');
     res.redirect(`/posts/${id}`);
 }));
 
-router.post('/posts/:id', catchAsync(async (req, res, next) => {
+router.post('/:id', catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const post = await Post.findById(id);
     const comment = new Comm(req.body);
@@ -67,10 +64,11 @@ router.post('/posts/:id', catchAsync(async (req, res, next) => {
     await post.save();
     await comment.save();
 
+    req.flash('success', 'Comment has been successfully published');
     res.redirect(`/posts/${id}`);
 }));
 
-router.delete('/posts/:id', catchAsync(async (req, res, next) => {
+router.delete('/:id', catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const post = await Post.findById(id);
 
@@ -84,42 +82,11 @@ router.delete('/posts/:id', catchAsync(async (req, res, next) => {
     }
 
     await Post.findByIdAndDelete(id);
-
+    
+    req.flash('success', 'Post successfully deleted!');
     res.redirect('/posts');
 }));
 
-router.get('/comment/:id/edit', catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-    const comment = await Comm.findById(id);
-    res.render('posts/edit', {
-        comment,
-        isPost: false
-    });
-}));
-
-router.put('/comment/:id', catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-    await Comm.findByIdAndUpdate(id, { ...req.body });
-    const { user } = await Comm.findById(id);
-
-    res.redirect(`/posts/${user.toString()}`);
-}));
-
-router.delete('/comment/:id', catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-    const { user } = await Comm.findById(id);
-    const post = await Post.findById(user.toString());
-    await Comm.findByIdAndDelete(id);
-
-    let allComms = await Comm.find({});
-    let comments = filter(allComms, post);
-
-    if (!comments.length) {
-        post.hasComments = false;
-    }
-
-    res.redirect(`/posts/${post._id}`);
-}));
 
 
 module.exports = router;

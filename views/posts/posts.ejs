@@ -3,8 +3,9 @@
 <section class="p-5">
     <div class="container">
         <h1 class="text-center">Recent <span class="custom-text-orange">Posts</span></h1>
-        <div class="row g-5 pt-5">
 
+        <div class="row g-5 pt-5">
+            <%- include('../partials/flash'); %>
             <% for (let post of posts) { %>
 
             <div class="col-md-6">
