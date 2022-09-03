@@ -1,13 +1,14 @@
 const { Router } = require('express');
-const Post = require('../models/postSchema');
-const Comm = require('../models/commentSchema');
-const catchAsync = require('../utils/catchAsync');
+const Post = require('../models/post.schema');
+const Comm = require('../models/comment.schema');
+const catchAsync = require('../middleware/catchAsync');
+const { isLoggedIn } = require('../middleware/auth');
 const filter = require('../utils/filter');
 const router = Router();
 
 
 
-router.get('/:id/edit', catchAsync(async (req, res, next) => {
+router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const comment = await Comm.findById(id);
     res.render('posts/edit', {
@@ -16,7 +17,7 @@ router.get('/:id/edit', catchAsync(async (req, res, next) => {
     });
 }));
 
-router.put('/:id', catchAsync(async (req, res, next) => {
+router.put('/:id', isLoggedIn, catchAsync(async (req, res, next) => {
     const { id } = req.params;
     await Comm.findByIdAndUpdate(id, { ...req.body });
     const { user } = await Comm.findById(id);
@@ -25,7 +26,7 @@ router.put('/:id', catchAsync(async (req, res, next) => {
     res.redirect(`/posts/${user.toString()}`);
 }));
 
-router.delete('/:id', catchAsync(async (req, res, next) => {
+router.delete('/:id', isLoggedIn, catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const { user } = await Comm.findById(id);
     const post = await Post.findById(user.toString());

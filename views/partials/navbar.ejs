@@ -12,9 +12,23 @@
                 <li class="nav-item">
                     <a href="/posts" class="nav-link ms-lg-4">Recent posts</a>
                 </li>
+                <li class="nav-item">
+                    <a href="/posts/create" class="nav-link ms-lg-4">Create new post</a>
+                </li>
+                <!-- Auth -->
+                <% if (!currentUser) { %>
+                    <li class="nav-item ps-5">
+                        <a href="/login" class="nav-link ms-lg-4">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/register" class="nav-link ms-lg-4">Sign Up</a>
+                    </li>
+                <% } else { %>
+                    <li class="nav-item ps-5">
+                        <a href="/logout" class="nav-link ms-lg-4">Logout</a>
+                    </li>
+                <% } %>
             </ul>
-            <button class="btn btn-md text-white ms-4" style="background-color: #E08600;" data-bs-toggle="modal"
-                data-bs-target="#newPost">New Post</button>
         </div>
     </div>
 </nav>

@@ -17,6 +17,10 @@ const postSchema = new Schema({
     hasComments: {
         type: Boolean,
         default: false
+    },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "Post"
     }
 });
 

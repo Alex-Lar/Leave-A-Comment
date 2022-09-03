@@ -1,5 +1,16 @@
-.custom-bg-orange {
-    background-color: #E08600;
+/* .custom-bg-orange {
+    background-color: #ef9000;
+} */
+
+.custom-btn-orange {
+    background-color: #ef9000;
+    color: white;
+    transition: background-color .3s ease;
+}
+
+.custom-btn-orange:hover {
+    color: white;
+    background-color: #ff9900;
 }
 
 .custom-bg-dark {
@@ -8,4 +19,20 @@
 
 .custom-text-orange {
     color: #E08600;
+}
+
+.custom-form-center {
+    margin: 0 auto;
+}
+
+.custom-form-sizing {
+    width: 100%;
+    max-width: 500px;
+}
+
+@media (max-width: 576px) {
+    .custom-form-sizing {
+        width: 100%;
+        max-width: 300px;
+    }
 }

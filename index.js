@@ -8,8 +8,13 @@ const flash = require('connect-flash');
 const methodOverride = require('method-override');
 const ExpressError = require('./utils/expressError');
 
-const postRoutes = require('./routes/post');
-const commRoutes = require('./routes/comment');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user.schema');
+
+const userRoute = require('./routes/user.routes');
+const postRoute = require('./routes/post.routes');
+const commentRoute = require('./routes/comment.routes');
 
 const app = express();
 
@@ -35,12 +40,23 @@ const sessionConfig = {
         httpOnly: true
     }
 };
+
 app.use(session(sessionConfig));
 app.use(flash());
 
+// Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 // Flash middleware
 app.use((req, res, next) => {
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
     next();
 });
 
@@ -49,8 +65,9 @@ app.get('/', (req, res, next) => {
     res.render('home');
 });
 
-app.use('/posts', postRoutes);
-app.use('/comment', commRoutes);
+app.use('/', userRoute);
+app.use('/posts', postRoute);
+app.use('/comment', commentRoute);
 
 
 app.all('*', (req, res, next) => {
@@ -69,7 +86,7 @@ app.use((err, req, res, next) => {
 
 async function start() {
     try {
-        await mongoose.connect('mongodb://localhost:27017/user-post')
+        await mongoose.connect('mongodb://127.0.0.1:27017/user-post')
         .then(() => console.log('Database connected...'));
 
         app.listen(3000, () => {
