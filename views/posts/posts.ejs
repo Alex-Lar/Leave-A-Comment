@@ -14,18 +14,18 @@
                     <div class="card-header text-light custom-bg-dark">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="d-inline">&mdash; <%= post.author.username %></span>
-
+                            <% if (currentUser && currentUser.equals(post.author._id)) { %>
                             <div class="d-flex align-items-center">
 
                                 <a href="/posts/<%= post._id %>/edit" class="link-light text-decoration-none">Edit</a>
 
 
-                                <!--* DELETE -->
                                 <form action="/posts/<%= post._id %>?_method=DELETE" method="POST" class="ms-1 p-0">
                                     <button type="submit"
                                         class="btn btn-link link-light text-decoration-none">Delete</button>
                                 </form>
                             </div>
+                            <% } %>
                         </div>
                     </div>
                     <div class="card-body">

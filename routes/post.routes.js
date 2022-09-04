@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const catchAsync = require('../middleware/catchAsync');
-const { isLoggedIn } = require('../middleware/auth');
+const { isLoggedIn, isAuthor } = require('../middleware/auth');
 
 const User = require('../models/user.schema');
 const Post = require('../models/post.schema');
@@ -32,7 +32,7 @@ router.get('/:id', catchAsync(async (req, res, next) => {
     });
 }));
 
-router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res, next) => {
+router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const post = await Post.findById(id);
 
@@ -58,7 +58,7 @@ router.post('/', isLoggedIn, catchAsync(async (req, res, next) => {
     res.redirect('/posts');
 }));
 
-router.put('/:id', isLoggedIn, catchAsync(async (req, res, next) => {
+router.put('/:id', isLoggedIn, isAuthor, catchAsync(async (req, res, next) => {
     const { id } = req.params;
     await Post.findByIdAndUpdate(id, { ...req.body });
     req.flash('success', 'The post was successfully edited!');
@@ -83,7 +83,7 @@ router.post('/:id', isLoggedIn, catchAsync(async (req, res, next) => {
     res.redirect(`/posts/${id}`);
 }));
 
-router.delete('/:id', isLoggedIn, catchAsync(async (req, res, next) => {
+router.delete('/:id', isLoggedIn, isAuthor, catchAsync(async (req, res, next) => {
     const { id } = req.params;
     await Comment.deletePostComments(id);
     await Post.findByIdAndDelete(id);

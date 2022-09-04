@@ -6,13 +6,15 @@
 
     <p class="card-text my-2 ms-3">&nbsp;<%= comment.content %></p>
 
-    <div class="d-flex align-items-center ms-3">&nbsp;
-        <a href="/comment/<%= comment._id %>/edit" class="link-secondary text-decoration-none">Edit</a>
-
-        <form action="/comment/<%= comment._id %>?_method=DELETE" method="post" class="p-0">
-            <button type="submit" class="btn btn-link link-secondary text-decoration-none">Delete</button>
-        </form>
-    </div>
+    <% if (currentUser && currentUser.equals(comment.author._id)) { %>
+        <div class="d-flex align-items-center ms-3">&nbsp;
+            <a href="/comment/<%= comment._id %>/edit" class="link-secondary text-decoration-none">Edit</a>
+    
+            <form action="/comment/<%= comment._id %>?_method=DELETE" method="post" class="p-0">
+                <button type="submit" class="btn btn-link link-secondary text-decoration-none">Delete</button>
+            </form>
+        </div>
+    <% } %>
 </div>
 
 

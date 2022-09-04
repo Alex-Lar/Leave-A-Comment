@@ -16,7 +16,7 @@ const commentSchema = new Schema({
 commentSchema.statics.findPostComments = async function(postId) {
     return await this.find({
         post: { $in: postId }
-    }).populate('author', 'username');
+    }).populate('author');
 };
 
 commentSchema.statics.deletePostComments = async function(postId) {
