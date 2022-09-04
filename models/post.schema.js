@@ -10,10 +10,6 @@ const postSchema = new Schema({
         type: String,
         required: true
     },
-    hasComments: {
-        type: Boolean,
-        default: false
-    },
     author: {
         type: Schema.Types.ObjectId,
         ref: "User"

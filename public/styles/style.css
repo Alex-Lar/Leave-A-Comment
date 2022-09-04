@@ -21,6 +21,13 @@
     color: #E08600;
 }
 
+.custom-text-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
 .custom-form-center {
     margin: 0 auto;
 }

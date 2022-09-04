@@ -1,0 +1,17 @@
+<% if (!posts.length) { %>
+    <div class="container text-center text-md-start">
+        <div class="row align-items-center justify-content-between">
+            <div class="col-md p-5">
+                <h2 class="h3">Sorry, but there are no posts yet...</h2>
+                <div class="my-4">
+                    <p class="lead">But don't worry! Because you can write it before the others!</p>
+                    <p class="lead">Be the first!</p>
+                    <a class="btn custom-btn-orange btn-lg text-white px-4" href="/posts/create">Create post</a>
+                </div>
+            </div>
+            <div class="col-md">
+                <img src="img/empty_1.svg" class="img-fluid  m-auto" alt="">
+            </div>
+        </div>
+    </div>
+<% } %>

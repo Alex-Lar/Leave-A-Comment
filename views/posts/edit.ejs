@@ -39,9 +39,9 @@
                 <form class="needs-validation" action="/comment/<%= comment._id %>?_method=PUT" method="POST"
                     novalidate>
                     <div class="mb-3">
-                        <label for="comment" class="col-form-label">Comment:</label>
-                        <textarea class="form-control" name="comment" id="comment" cols="30" rows="10"
-                            required><%=comment.comment%></textarea>
+                        <label for="content" class="col-form-label">Comment:</label>
+                        <textarea class="form-control" name="content" id="content" cols="30" rows="10"
+                            required><%=comment.content%></textarea>
                         <div class="valid-feedback">
                             Looks good!
                         </div>
