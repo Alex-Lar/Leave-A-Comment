@@ -1,15 +1,16 @@
 const { Router } = require('express');
-const Post = require('../models/post.schema');
-const Comm = require('../models/comment.schema');
 const catchAsync = require('../middleware/catchAsync');
 const { isLoggedIn } = require('../middleware/auth');
-const filter = require('../utils/filter');
+
+const User = require('../models/user.schema');
+const Post = require('../models/post.schema');
+const Comment = require('../models/comment.schema');
+
 const router = Router();
 
 
-
 router.get('/', catchAsync(async (req, res, next) => {
-    const posts = await Post.find({});
+    const posts = await Post.find({}).populate('author', 'username');
     res.render('posts/posts', {
         posts
     });
@@ -21,13 +22,9 @@ router.get('/create', isLoggedIn, (req, res, next) => {
 
 router.get('/:id', catchAsync(async (req, res, next) => {
     const { id } = req.params;
-    const post = await Post.findById(id);
-    let comments = [];
+    const post = await Post.findById(id).populate('author', 'username');
 
-    if (post.hasComments) {
-        const allComms = await Comm.find({});
-        comments = filter(allComms, post);
-    }
+    const comments = await Comment.findPostComments(post._id);
 
     res.render('posts/show', {
         post,
@@ -46,8 +43,17 @@ router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res, next) => {
 }));
 
 router.post('/', isLoggedIn, catchAsync(async (req, res, next) => {
-    const post = new Post(req.body);
+    const { title, content } = req.body;
+
+    if (!title || !content) {
+        req.flash('error', 'Both input fields must be filled in!')
+        return res.redirect('/posts/create');
+    }
+
+    const post = new Post({title, content});
+    post.author = req.user._id;
     await post.save();
+
     req.flash('success', 'New post successfully created!');
     res.redirect('/posts');
 }));
@@ -62,13 +68,16 @@ router.put('/:id', isLoggedIn, catchAsync(async (req, res, next) => {
 // create comment
 router.post('/:id', isLoggedIn, catchAsync(async (req, res, next) => {
     const { id } = req.params;
+    const { content } = req.body;
+
     const post = await Post.findById(id);
-    const comment = new Comm(req.body);
-    comment.user = post;
-    post.hasComments = true;
+    const newComment = new Comment({content});
+
+    newComment.post = post._id;
+    newComment.author = req.user._id;
 
     await post.save();
-    await comment.save();
+    await newComment.save();
 
     req.flash('success', 'Comment has been successfully published');
     res.redirect(`/posts/${id}`);
@@ -76,17 +85,7 @@ router.post('/:id', isLoggedIn, catchAsync(async (req, res, next) => {
 
 router.delete('/:id', isLoggedIn, catchAsync(async (req, res, next) => {
     const { id } = req.params;
-    const post = await Post.findById(id);
-
-    if (post.hasComments) {
-        let allComms = await Comm.find({});
-        let comments = filter(allComms, post);
-
-        for (let comment of comments) {
-            await Comm.findByIdAndDelete(comment._id);
-        }
-    }
-
+    await Comment.deletePostComments(id);
     await Post.findByIdAndDelete(id);
     
     req.flash('success', 'Post successfully deleted!');

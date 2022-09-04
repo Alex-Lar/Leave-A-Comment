@@ -2,9 +2,9 @@
 <% for (let comment of comments) { %>
 
 <div class="card-body py-1">
-    <p class="my-1 text-muted">&mdash;&nbsp;<%= comment.author %></p>
+    <p class="my-1 text-muted">&mdash;&nbsp;<%= comment.author.username %></p>
 
-    <p class="card-text my-2 ms-3">&nbsp;<%= comment.comment %></p>
+    <p class="card-text my-2 ms-3">&nbsp;<%= comment.content %></p>
 
     <div class="d-flex align-items-center ms-3">&nbsp;
         <a href="/comment/<%= comment._id %>/edit" class="link-secondary text-decoration-none">Edit</a>

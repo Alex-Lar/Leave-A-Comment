@@ -6,11 +6,7 @@ const postSchema = new Schema({
         type: String,
         required: true
     },
-    author: {
-        type: String,
-        required: true
-    },
-    text: {
+    content: {
         type: String,
         required: true
     },
@@ -18,9 +14,9 @@ const postSchema = new Schema({
         type: Boolean,
         default: false
     },
-    user: {
+    author: {
         type: Schema.Types.ObjectId,
-        ref: "Post"
+        ref: "User"
     }
 });
 

@@ -2,16 +2,27 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const commentSchema = new Schema({
-    author: String,
-    comment: String,
+    content: String,
     post: {
         type: Schema.Types.ObjectId,
         ref: "Post"
     },
-    user: {
+    author: {
         type: Schema.Types.ObjectId,
         ref: "User"
     }
 });
+
+commentSchema.statics.findPostComments = async function(postId) {
+    return await this.find({
+        post: { $in: postId }
+    }).populate('author', 'username');
+};
+
+commentSchema.statics.deletePostComments = async function(postId) {
+    await this.deleteMany({
+        post: { $in: postId}
+    });
+};
 
 module.exports = mongoose.model('Comment', commentSchema);
