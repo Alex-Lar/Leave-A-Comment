@@ -15,6 +15,7 @@ const User = require('./models/user.schema');
 const userRoute = require('./routes/user.routes');
 const postRoute = require('./routes/post.routes');
 const commentRoute = require('./routes/comment.routes');
+require('dotenv').config();
 
 const app = express();
 
@@ -31,7 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Session config
 const sessionConfig = {
-    secret: 'verysecretstring',
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -87,11 +88,11 @@ app.use((err, req, res, next) => {
 
 async function start() {
     try {
-        await mongoose.connect('mongodb://127.0.0.1:27017/user-post')
+        await mongoose.connect(process.env.DB_STRING)
         .then(() => console.log('Database connected...'));
 
-        app.listen(3000, () => {
-            console.log("Port 3000 is on...");
+        app.listen(process.env.PORT, () => {
+            console.log("Port is on...");
         });
     } catch (e) {
         console.log('ERROR');
